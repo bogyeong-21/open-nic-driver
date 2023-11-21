@@ -109,6 +109,9 @@ static const struct pci_device_id onic_pci_tbl[] = {
 	{ PCI_DEVICE(0x10ee, 0x9248), },	/* PF 2 */
 	{ PCI_DEVICE(0x10ee, 0x9348), },	/* PF 3 */
 
+	{ PCI_DEVICE(0x1f52, 0x1010), },
+	{ PCI_DEVICE(0x1f52, 0x9048), },
+
 	{0,}
 };
 
