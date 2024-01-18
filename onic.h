@@ -22,7 +22,8 @@
 
 #include "onic_hardware.h"
 
-#define ONIC_MAX_QUEUES			64
+#define ONIC_MAX_QUEUES	64
+#define INTERNAL_QBASE 12
 
 /* state bits */
 #define ONIC_ERROR_INTR			0

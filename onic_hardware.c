@@ -246,7 +246,7 @@ int onic_init_hardware(struct onic_private *priv)
 		return -ENOMEM;
 
 	func_id = PCI_FUNC(pdev->devfn);
-	qbase = func_id * ONIC_MAX_QUEUES;
+	qbase = INTERNAL_QBASE + func_id * ONIC_MAX_QUEUES;
 	qmax = max(priv->num_tx_queues, priv->num_rx_queues);
 
 	/* initialize QDMA function map context */

@@ -21,11 +21,14 @@
 
 static inline u32 onic_read_reg(struct onic_hardware *hw, u32 offset)
 {
+  pr_err("[ONIC READ] %x", offset);
 	return ioread32(hw->addr + offset);
 }
 
 static inline void onic_write_reg(struct onic_hardware *hw, u32 offset, u32 val)
 {
+  pr_err("[ONIC WRITE] %x, %d", offset, val);
+  pr_err("[ONC hw -> addr] %llx", (u64)(hw->addr));
 	iowrite32(val, hw->addr + offset);
 }
 

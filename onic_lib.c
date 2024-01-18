@@ -181,6 +181,8 @@ static void onic_set_num_queues(struct onic_private *priv)
 		min_t(u16, priv->num_q_vectors, dev->real_num_tx_queues);
 	priv->num_rx_queues =
 		min_t(u16, priv->num_q_vectors, dev->real_num_rx_queues);
+  pr_err("[BG] num_q_vec: %d, real_num_tx: %d, real_num_rx: %d",
+      priv->num_q_vectors, dev->real_num_tx_queues, dev->real_num_rx_queues);
 }
 
 int onic_init_capacity(struct onic_private *priv)

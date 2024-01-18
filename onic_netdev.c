@@ -66,6 +66,8 @@ static void onic_tx_clean(struct onic_tx_queue *q)
 		return;
 	}
 
+  //pr_err("[TX_CLEAN : %d] cidx: %6d   to_clean: %6d   pidx: %6d  to_use: %6d", q->qid, wb.cidx, ring->next_to_clean, wb.pidx, ring->next_to_use);
+
 	work = wb.cidx - ring->next_to_clean;
 	if (work < 0)
 		work += onic_ring_get_real_count(ring);
@@ -126,8 +128,8 @@ static int onic_rx_poll(struct napi_struct *napi, int budget)
 	bool flipped = 0;
 	bool debug = 0;
 
-	for (i = 0; i < priv->num_tx_queues; i++)
-		onic_tx_clean(priv->tx_queue[i]);
+  for (i = 0; i < priv->num_tx_queues; i++)
+    onic_tx_clean(priv->tx_queue[i]);
 
 	cmpl_ptr =
 		cmpl_ring->desc + QDMA_C2H_CMPL_SIZE * cmpl_ring->next_to_clean;
@@ -672,6 +674,37 @@ int onic_stop_netdev(struct net_device *dev)
 	return 0;
 }
 
+//static void buf_hex_dump(char *buf, int len)
+//{
+//  int rowsize = 16; 
+//  int i, l, linelen, remaining, li; 
+//  char *buf_recover;
+//  __u8 ch; 
+//
+//  buf_recover = buf; // Save current location 
+//  remaining = len;
+//  li = 0;
+//
+//  for (i = 0; i < len; i += rowsize) {
+//    printk("%06d\t", li);
+//
+//    linelen = min(remaining, rowsize);
+//    remaining -= rowsize;
+//
+//    for (l = 0; l < linelen; l++) {
+//      ch = buf[l];
+//      printk(KERN_CONT "%02X ", (uint32_t) ch);
+//    }   
+//
+//    buf += linelen;
+//    li += 10; 
+//
+//    printk(KERN_CONT "\n");
+//  }
+//
+//  buf = buf_recover;
+//}
+
 netdev_tx_t onic_xmit_frame(struct sk_buff *skb, struct net_device *dev)
 {
 	struct onic_private *priv = netdev_priv(dev);
@@ -683,6 +716,8 @@ netdev_tx_t onic_xmit_frame(struct sk_buff *skb, struct net_device *dev)
 	u8 *desc_ptr;
 	int rv;
 	bool debug = 0;
+  
+  //pr_err("[BG] device: %d, qid: %d", PCI_FUNC(priv->pdev->devfn), qid);
 
 	q = priv->tx_queue[qid];
 	ring = &q->ring;
@@ -716,6 +751,12 @@ netdev_tx_t onic_xmit_frame(struct sk_buff *skb, struct net_device *dev)
 	desc.src_addr = dma_addr;
 	desc.metadata = skb->len;
 	qdma_pack_h2c_st_desc(desc_ptr, &desc);
+
+  //pr_err("[BG] dump skb->data");
+  //buf_hex_dump(skb->data, skb->len);
+  
+  //pr_err("[BG] dump qdma tx descriptor");
+  //buf_hex_dump(desc_ptr, QDMA_H2C_ST_DESC_SIZE);
 
 	q->buffer[ring->next_to_use].skb = skb;
 	q->buffer[ring->next_to_use].dma_addr = dma_addr;
